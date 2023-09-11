@@ -1,0 +1,134 @@
+{% extends 'app/index.html' %} {% load static %} {% block navbarlist %}
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'gallary' %}">Gallary </a>
+  </li>
+  <li class="nav-item dropdown">
+    <a
+      class="nav-link dropdown-toggle"
+      id="navbarDropdown"
+      role="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      About
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <li><a class="dropdown-item" href="#">Profile</a></li>
+      {% if status %}
+      <li><a class="dropdown-item" href="{% url 'logout' %}">Log-Out</a></li>
+      {% else %}
+      <li><a class="dropdown-item" href="{% url 'login' %}">Log-In</a></li>
+      {% endif %}
+      <li><hr class="dropdown-divider" /></li>
+      <li>
+        <a class="dropdown-item" href="#">Help?</a>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'cart' %}"
+      >Cart
+      <span class="text-warning">
+        {% if cartcount %}{{cartcount}}{% endif %}</span
+      ></a
+    >
+  </li>
+</ul>
+{% if status %}
+<form class="d-flex" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button class="btn btn-outline-success" type="submit">Log-Out</button>
+</form>
+{% else %}
+<form class="d-flex" action="{% url 'login' %}">
+  {% csrf_token %}
+  <button class="btn btn-outline-success" type="submit">Log-In</button>
+</form>
+{% endif %} {% endblock navbarlist %} {% block content %}
+<div id="outercardgallarybox">
+  <div id="innercardgallarybox">
+    <div id="cartitem">
+      {% for i,j,k in list_final %}
+      <div id="content">
+        <div id="img"><img src="{{i.Image.url}}" alt="" /></div>
+        <div id="details">
+          <h1 id="name">{{i.Name}}</h1>
+          <h2 id="price">RS.{{i.Price}}</h2>
+          <h4 id="color">{{i.ColorName}}</h4>
+        </div>
+        <div id="quantity">
+          <form action="" method="post">
+            {% csrf_token %}
+            <div id="update">
+              <h6>
+                QTY :
+                <input
+                  type="number"
+                  name="updatequantity"
+                  id=""
+                  value="{{j}}"
+                />
+              </h6>
+              <h6>
+                <input type="hidden" name="id" value="{{i.id}}" />
+                <input type="submit" value="Update" />
+              </h6>
+            </div>
+
+            <div id="remove">
+              <h6><input type="submit" value="Remove" name="remove" /></h6>
+            </div>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if GT %}
+    <div id="bill">
+      {% for i,j,k in list_final %}
+      <h6>
+        <span id="name">{{i.Name}}</span>
+        <span id="total">
+          <span id="span">
+            <span id="price">RS.{{i.Price}}</span>
+            <span id="mul"> * </span>
+            <span id="quantity">{{j}}</span>
+          </span>
+          <span id="equ"> = </span>
+          <span id="totalprice">{{k}}</span>
+        </span>
+      </h6>
+      {% endfor %}
+      <hr />
+      <h5>
+        <span id="name">RS.Grand Total</span>
+        <span id="price">{{GT}}</span>
+      </h5>
+      <form action="{% url 'payment' %}" method="post">
+        {% csrf_token %}
+        <input
+          type="submit"
+          value="Make Payment"
+          id="makepayment"
+          class="bg-warning"
+        />
+      </form>
+    </div>
+    {% else %}
+    <center>
+      <h1 id="NoProduct">
+        {% if msg %} {{msg}} {% else %} No Product Available in Your Cart
+        {%endif %}
+      </h1>
+    </center>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends 'app/index.html' %} {% block content %}
+<div id="loginpage">
+  <form id="login" action="{% url 'signup' %}" method="post">
+    {% csrf_token %}
+    <table>
+      {% for i in fm %}
+      <tr>
+        <td id="left">{{i.label}} {{i.errors|striptags}} <td>:</td></td>
+        <td id="right">{{i}}</td>
+      </tr>
+      {% endfor%}
+    </table>
+      {% for i in messages %} <div id="msg">{{i}}</div> {% endfor%}
+    <input type="submit" value="Sign Up" />
+  </form>
+ {% endblock content %}
+</div>

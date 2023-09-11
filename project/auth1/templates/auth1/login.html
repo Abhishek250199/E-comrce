@@ -1,0 +1,79 @@
+{% extends 'app/index.html' %} {% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand text-warning">CoolBanD</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      {% block navbarlist %}
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}"
+            >Home</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'gallary' %}">Gallary</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            About
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            {% if status %}
+            <li>
+              <a class="dropdown-item" href="{% url 'logout' %}">Log-Out</a>
+            </li>
+            {% else %}
+            <li>
+              <a class="dropdown-item" href="{% url 'login' %}">Log-In</a>
+            </li>
+            {% endif %}
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="#">Help?</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'cart' %}"
+            >Cart<span class="text-warning">
+              {% if cartcount %}{{cartcount}}{% endif %}</span
+            ></a
+          >
+        </li>
+      </ul>
+      <form class="d-flex" action="{% url 'home' %}">
+        <button class="btn btn-outline-success" type="submit">Guest</button>
+      </form>
+      &nbsp {% if status %}
+      <form class="d-flex" action="{% url 'logout' %}">
+        <button class="btn btn-outline-success" type="submit">Log-Out</button>
+      </form>
+      {% else %}
+      <form class="d-flex" action="{% url 'signup' %}">
+        <button class="btn btn-outline-success" type="submit">Sign-Up</button>
+      </form>
+      {% endif %} {% endblock navbarlist %}
+    </div>
+  </div>
+</nav>
+{% endblock navbar %} {% block content %}
+<div id="loginpage">
+  <form id="login" action="{% url 'login' %}" method="post">
+    {% csrf_token %} {% for i in fm %} {{i.label}} {{i.errors|striptags}} {{i}}
+    <br />{% endfor%} {% for i in messages %}
+    <div id="msg">{{i}}</div>
+    {% endfor%}
+    <input type="submit" value="Log In" />
+  </form>
+  {% endblock content %}
+</div>

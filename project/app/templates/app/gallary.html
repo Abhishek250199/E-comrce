@@ -1,0 +1,95 @@
+{% extends 'app/index.html' %}
+{% load static %}
+  {% block navbarlist %}
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'gallary' %}">Gallary</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                About
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                {% if status %}
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Log-Out</a></li>
+                {% else %}
+                <li><a class="dropdown-item" href="{% url 'login' %}">Log-In</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#">Help?</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cart' %}">Cart<span class="text-warning">
+        {% if cartcount %}{{cartcount}}{% endif %}</span
+      ></a>
+            </li>
+          </ul>
+          <form class="d-flex" action="{% url 'search' %}" method="post">
+            {% csrf_token %}
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              name='search'
+            />
+            <button class="btn btn-outline-success" type="submit">
+              Search
+            </button>
+          </form>
+         {% endblock navbarlist %}
+{% block content %}
+{% if msg %}
+<br><br>
+<center><h1 id="msg">{{msg}}</h1> </center>
+<br>
+<hr>
+{% endif %}
+<br>
+<div id="outergallarybox">
+
+  {% for i in data %}
+  <div id="cardbox">
+    <img src="{{i.Image.url}}" alt="" />
+    <tr align="left">
+      <br />
+      <th><h1 id="WatchName">{{i.Name}}</h1></th>
+      <td><h4>Rs.{{i.Price}}</h4></td>
+      <td><h5 id="pink">{{i.ColorName}}</h5></td>
+      {% comment %} <td><h5>Quantity:{{i.Quantity}}</h5></td> {% endcomment %}
+       <td>
+        {% comment %} {% url 'productDetails' %} {% endcomment %}
+        <a href=""><h6>More-Details</a>
+            <br>
+      </td><br>
+    </tr>
+    <form action="{% url 'gallary' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="id" value="{{i.id}}">
+      <input type="hidden" name="quantity" value="{{i.Quantity}}">
+      <input type="hidden" name="reqquantity" value="1">
+      {% if id == i.id %}
+      <h5 id="msg"> {{msg}} </h5>
+      {% endif %}
+    <input type="submit" value="Add To Card" name='addcart' id="cardbtn">
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% endblock content %}
